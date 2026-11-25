@@ -117,7 +117,17 @@ def lower_bound(sorted_items, target, key=lambda x: x):
     Example: [1, 3, 3, 5, 9] with target 3 -> 1,  target 4 -> 3,  target 10 -> 5
     Target: O(log n).  Keep two pointers lo, hi and halve the range each step.
     """
-    raise NotImplementedError("Part 2: lower_bound")
+    lo = 0
+
+    hi = len(sorted_items) - 1
+
+    while lo <= hi:
+        middle = (lo + hi) // 2
+
+        middle_item = sorted_items[middle]
+
+        
+        
 
 
 # =====================================================================
