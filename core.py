@@ -55,7 +55,7 @@ def build_index(records, key):
                 duplicates.append(temp_key)
         else:
             index[temp_key] = r
-            
+
     return (index, duplicates)
     
 
@@ -73,7 +73,39 @@ def merge_sort(items, key=lambda x: x):
               (when the keys are equal, take from the LEFT half -> stable)
     Target: O(n log n).
     """
-    raise NotImplementedError("Part 2: merge_sort")
+    if len(items) <= 1:
+        return items
+
+    middle = len(items) // 2
+
+    left_sort = merge_sort(items[:middle], key)
+    right_sort = merge_sort(items[middle:], key)
+
+    merged = []
+
+    left_index = 0
+    right_index = 0
+
+    while left_index < len(left_sort) and right_index < len(right_sort):
+        if key(left_sort[left_index]) <= key(right_sort[right_index]):
+            merged.append(left_sort[left_index])
+            left_index += 1
+        else:
+            merged.append(right_sort[right_index])
+            right_index += 1
+
+    while left_index < len(left_sort):
+        merged.append(left_sort[left_index])
+        left_index += 1
+
+    while right_index < len(right_sort):
+        merged.append(right_sort[right_index])
+        right_index += 1
+    
+    return merged
+
+
+
 
 
 def lower_bound(sorted_items, target, key=lambda x: x):
