@@ -50,11 +50,12 @@ def build_index(records, key):
     duplicates = []
 
     for r in records:
-        for k in records[r]:
-            if records[k] in index:
-                duplicates.append(records[k])
-            else:
-                index[k][r] = records[k][r]
+        temp_key = r[key]
+        if temp_key in index:
+                duplicates.append(temp_key)
+        else:
+            index[temp_key] = r
+            
     return (index, duplicates)
     
 
