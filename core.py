@@ -121,11 +121,19 @@ def lower_bound(sorted_items, target, key=lambda x: x):
 
     hi = len(sorted_items) - 1
 
+    result = len(sorted_items)
     while lo <= hi:
         middle = (lo + hi) // 2
 
         middle_item = sorted_items[middle]
 
+        if key(middle_item) < target:
+            lo = middle + 1
+        else:
+            result = middle
+            hi = middle - 1
+  
+    return result
         
         
 
