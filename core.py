@@ -197,7 +197,44 @@ class MinHeap:
         """Remove and return (priority, item) with the smallest priority.
         Move the last entry to the top, then 'bubble down'.
         Raise IndexError if the heap is empty. O(log n)."""
-        raise NotImplementedError("Part 3: MinHeap.pop")
+
+        if len(self._a) == 0:
+            raise IndexError("Heap is empty")
+
+        root_entry = self._a[0]
+
+        if len(self._a) == 1:
+            self._a.pop()
+            return (root_entry[0], root_entry[2])
+
+        self._a[0] = self._a[-1]
+        self._a.pop()
+
+        i = 0
+
+        while True:
+
+            smallest_priority = i
+
+            left_child = 2*i + 1
+            right_child = 2*i + 2
+
+            if left_child < len(self._a):
+                if self._a[left_child] < self._a[smallest_priority]:
+                    smallest_priority = left_child
+
+            if right_child < len(self._a):
+                if self._a[right_child] < self._a[smallest_priority]:
+                    smallest_priority = right_child
+
+            if smallest_priority == i:
+                break
+
+            self._a[i], self._a[smallest_priority] = self._a[smallest_priority], self._a[i]
+            i = smallest_priority
+
+        return (root_entry[0], root_entry[2])
+
 
 
 # =====================================================================
