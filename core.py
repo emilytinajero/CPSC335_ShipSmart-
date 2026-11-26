@@ -122,6 +122,7 @@ def lower_bound(sorted_items, target, key=lambda x: x):
     hi = len(sorted_items) - 1
 
     result = len(sorted_items)
+
     while lo <= hi:
         middle = (lo + hi) // 2
 
@@ -160,7 +161,23 @@ class MinHeap:
 
     def push(self, priority, item):
         """Add an item. Append at the end, then 'bubble up'. O(log n)."""
-        raise NotImplementedError("Part 3: MinHeap.push")
+        entry = (priority, self._count, item)
+
+        self._a.append(entry)
+
+        self._count += 1
+
+        i = len(self._a) - 1
+
+        while i > 0:
+            parent = (i-1) // 2
+
+            if self._a[i] < self._a[parent]:
+
+                self._a[i], self._a[parent] = self._a[parent], self._a[i]
+                i = parent
+            else:
+                break
 
     def peek(self):
         """Return (priority, item) with the smallest priority without removing it.
