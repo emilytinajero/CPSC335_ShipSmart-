@@ -182,7 +182,16 @@ class MinHeap:
     def peek(self):
         """Return (priority, item) with the smallest priority without removing it.
         Raise IndexError if the heap is empty. O(1)."""
-        raise NotImplementedError("Part 3: MinHeap.peek")
+
+        if len(self._a) == 0:
+            raise IndexError("Heap is empty")
+
+        entry = self._a[0]
+        smallest_priority = (entry[0], entry[2])
+
+        return smallest_priority
+
+
 
     def pop(self):
         """Remove and return (priority, item) with the smallest priority.
