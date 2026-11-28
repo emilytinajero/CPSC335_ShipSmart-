@@ -339,8 +339,44 @@ def kmp_search(text, pattern):
     2) scan the text once, never moving backwards in the text
     Target: O(n + m).  Do not use str.find, str.index, `in` on strings, or re.
     """
-    raise NotImplementedError("Part 7: kmp_search")
+    n = len(text)
+    m = len(pattern)
 
+    if m == 0:
+        return []
+
+    failure_table = [0 for _ in range(m)]
+
+    k = 0
+
+    for i in range(1,m):
+        while k > 0 and pattern[i] != pattern[k]:
+            k = failure_table[k-1]
+
+        if pattern[i] == pattern[k]:
+            k += 1
+
+        failure_table[i] = k
+
+    matches = []
+
+    j = 0
+
+    for i in range(0, n):
+        while j > 0 and text[i] != pattern[j]:
+            j = failure_table[j-1]
+
+        if text[i] == pattern[j]:
+            j += 1
+
+        if j == m:
+            matches.append(i - m + 1)
+            j = failure_table[j - 1]
+
+    return matches
+
+    
+        
 
 # =====================================================================
 # PART 8 - An NP-hard problem: the shortest tour (TSP)          (Week 14)
