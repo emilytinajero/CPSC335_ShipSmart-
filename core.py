@@ -45,16 +45,16 @@ def build_index(records, key):
     Example: records with ids A, B, A  ->  ({"A": ..., "B": ...}, ["A"])
     Target: expected O(n) time.
     """
-    index = {}
+    index = {} #maps key values to first record seen
 
-    duplicates = []
+    duplicates = [] # stores duplicate keys
 
     for r in records:
-        temp_key = r[key]
+        temp_key = r[key] # gets value used for indexing
         if temp_key in index:
-                duplicates.append(temp_key)
+                duplicates.append(temp_key)  # tracks duplicate keys
         else:
-            index[temp_key] = r
+            index[temp_key] = r 
 
     return (index, duplicates)
     
@@ -74,10 +74,11 @@ def merge_sort(items, key=lambda x: x):
     Target: O(n log n).
     """
     if len(items) <= 1:
-        return items
+        return items  # base case
 
     middle = len(items) // 2
 
+    # recursively sorts through each half of items
     left_sort = merge_sort(items[:middle], key)
     right_sort = merge_sort(items[middle:], key)
 
@@ -86,18 +87,21 @@ def merge_sort(items, key=lambda x: x):
     left_index = 0
     right_index = 0
 
+    # merges two sorted halves
     while left_index < len(left_sort) and right_index < len(right_sort):
-        if key(left_sort[left_index]) <= key(right_sort[right_index]):
+        if key(left_sort[left_index]) <= key(right_sort[right_index]): # on ties take from left to keep stable
             merged.append(left_sort[left_index])
             left_index += 1
         else:
             merged.append(right_sort[right_index])
             right_index += 1
 
+    # appends remaining items from left half
     while left_index < len(left_sort):
         merged.append(left_sort[left_index])
         left_index += 1
 
+    # appends remaining items from right half
     while right_index < len(right_sort):
         merged.append(right_sort[right_index])
         right_index += 1
@@ -123,14 +127,17 @@ def lower_bound(sorted_items, target, key=lambda x: x):
 
     result = len(sorted_items)
 
+    # binary serach
     while lo <= hi:
         middle = (lo + hi) // 2
 
         middle_item = sorted_items[middle]
 
+        # searches the right half
         if key(middle_item) < target:
             lo = middle + 1
         else:
+            # stores possible answer + keeps searching left
             result = middle
             hi = middle - 1
   
@@ -161,17 +168,19 @@ class MinHeap:
 
     def push(self, priority, item):
         """Add an item. Append at the end, then 'bubble up'. O(log n)."""
-        entry = (priority, self._count, item)
+        entry = (priority, self._count, item) # stores entries
 
         self._a.append(entry)
 
         self._count += 1
 
-        i = len(self._a) - 1
+        i = len(self._a) - 1 # starts at new node
 
+        # bubble up until order restored
         while i > 0:
             parent = (i-1) // 2
 
+            # move smaller priroity towards root
             if self._a[i] < self._a[parent]:
 
                 self._a[i], self._a[parent] = self._a[parent], self._a[i]
@@ -183,11 +192,12 @@ class MinHeap:
         """Return (priority, item) with the smallest priority without removing it.
         Raise IndexError if the heap is empty. O(1)."""
 
+        # base case
         if len(self._a) == 0:
             raise IndexError("Heap is empty")
 
         entry = self._a[0]
-        smallest_priority = (entry[0], entry[2])
+        smallest_priority = (entry[0], entry[2]) # stores smallest priority without removing it
 
         return smallest_priority
 
@@ -204,25 +214,29 @@ class MinHeap:
         root_entry = self._a[0]
 
         if len(self._a) == 1:
-            self._a.pop()
+            self._a.pop() # removes only element in the heap
             return (root_entry[0], root_entry[2])
 
+        # moves last element to roto
         self._a[0] = self._a[-1]
         self._a.pop()
 
         i = 0
 
+        # bubble down until order is restored
         while True:
 
-            smallest_priority = i
+            smallest_priority = i # assumes current node is the smallest
 
             left_child = 2*i + 1
             right_child = 2*i + 2
 
-            if left_child < len(self._a):
+            # checks if left child is smaller
+            if left_child <len(self._a):
                 if self._a[left_child] < self._a[smallest_priority]:
                     smallest_priority = left_child
 
+            # checks if right child is smaller
             if right_child < len(self._a):
                 if self._a[right_child] < self._a[smallest_priority]:
                     smallest_priority = right_child
@@ -230,6 +244,7 @@ class MinHeap:
             if smallest_priority == i:
                 break
 
+            # swaps the smaller child and continues
             self._a[i], self._a[smallest_priority] = self._a[smallest_priority], self._a[i]
             i = smallest_priority
 
@@ -342,26 +357,28 @@ def kmp_search(text, pattern):
     n = len(text)
     m = len(pattern)
 
-    if m == 0:
+    if m == 0: # base case
         return []
 
     failure_table = [0 for _ in range(m)]
 
     k = 0
 
+    # builds the failure table 
     for i in range(1,m):
         while k > 0 and pattern[i] != pattern[k]:
-            k = failure_table[k-1]
+            k = failure_table[k-1] # goes back to previous prefix
 
         if pattern[i] == pattern[k]:
-            k += 1
+            k += 1 # extends prefix match
 
-        failure_table[i] = k
+        failure_table[i] = k # stores the longest prefix-suffix length
 
     matches = []
 
     j = 0
 
+    # scans text using the previously made failure table
     for i in range(0, n):
         while j > 0 and text[i] != pattern[j]:
             j = failure_table[j-1]
@@ -370,8 +387,8 @@ def kmp_search(text, pattern):
             j += 1
 
         if j == m:
-            matches.append(i - m + 1)
-            j = failure_table[j - 1]
+            matches.append(i - m + 1) # found complete match
+            j = failure_table[j - 1] # allows for overlapping matches
 
     return matches
 
@@ -395,7 +412,10 @@ def tour_brute_force(start, stops, dist):
     (do not repeat start at the end). If stops is empty return ([start], 0).
     Target: O(n!) - only for about 9 stops or fewer.
     """
-    raise NotImplementedError("Part 8: tour_brute_force")
+    if len(stops) == 0:
+        return ([start], 0)
+
+    
 
 
 def tour_heuristic(start, stops, dist):
